@@ -1,8 +1,7 @@
 FROM rust:1.83 as builder
 
 WORKDIR /usr/src/app
-COPY ./sensor-benchmark-tool .
-COPY ./sensor-suricata-service-rust/proto ./proto
+COPY . .
 
 RUN apt-get update && apt-get install -y protobuf-compiler
 RUN cargo build --release

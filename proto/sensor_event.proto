@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "./pb";
+
+import "google/protobuf/empty.proto";
+
+message Metric {
+  string snort_timestamp = 1;
+  optional string snort_base64_data = 2;
+  optional int64 snort_client_bytes = 3;
+  optional int64 snort_client_pkts = 4;
+  optional string snort_dst_address = 5;
+  optional int64 snort_dst_port = 6;
+  optional string snort_dst_ap = 7;
+  optional string snort_eth_dst = 8;
+  optional int64 snort_eth_len = 9;
+  optional string snort_eth_src = 10;
+  optional string snort_eth_type = 11;
+  optional int64 snort_flowstart_time = 12;
+  optional int64 snort_geneve_vni = 13;
+  optional int64 snort_icmp_code = 14;
+  optional int64 snort_icmp_id = 15;
+  optional int64 snort_icmp_seq = 16;
+  optional int64 snort_icmp_type = 17;
+  optional int64 snort_ip_id = 18;
+  optional int64 snort_ip_length = 19;
+  optional int64 snort_mpls = 20;
+  optional string snort_pkt_gen = 21;
+  optional int64 snort_pkt_length = 22;
+  optional int64 snort_pkt_number = 23;
+  optional int64 snort_server_bytes = 24;
+  optional int64 snort_server_pkts = 25;
+  optional int64 snort_sgt = 26;
+  optional string snort_src_address = 27;
+  optional int64 snort_src_port = 28;
+  optional string snort_src_ap = 29;
+  optional string snort_target = 30;
+  optional int64 snort_tcp_ack = 31;
+  optional string snort_tcp_flags = 32;
+  optional int64 snort_tcp_len = 33;
+  optional int64 snort_tcp_seq = 34;
+  optional int64 snort_tcp_win = 35;
+  optional int64 snort_time_to_live = 36;
+  optional int64 snort_udp_length = 37;
+  optional int64 snort_vlan = 38;
+}
+
+message SensorEvent {
+  repeated Metric metrics = 1;
+  string event_hash_sha256 = 2;
+  int64 event_metrics_count = 3;
+  int64 event_seconds = 4;
+  string sensor_id = 5;
+  string sensor_version = 6;
+  int64 event_read_at = 7;
+  int64 event_sent_at = 8;
+  int64 event_received_at = 9;
+  optional string snort_action = 10;
+  optional string snort_classification = 11;
+  optional string snort_direction = 12;
+  string snort_interface = 13;
+  string snort_message = 14;
+  int64 snort_priority = 15;
+  string snort_protocol = 16;
+  int64 snort_rule_gid = 17;
+  int64 snort_rule_rev = 18;
+  int64 snort_rule_sid = 19;
+  string snort_rule = 20;
+  int64 snort_seconds = 21;
+  optional string snort_service = 22;
+  optional int64 snort_type_of_service = 23;
+}
+
+message AlertSummary {
+  int32 total_alerts = 1;
+}
+
+service SensorService {
+  rpc StreamData (stream SensorEvent) returns (google.protobuf.Empty) {}
+}
