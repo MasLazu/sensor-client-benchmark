@@ -17,9 +17,7 @@ services:
           memory: 1G
 
   rust-benchmarker:
-    build:
-      context: ..
-      dockerfile: sensor-benchmark-tool/Dockerfile
+    image: ghcr.io/maslazu/sensor-client-benchmark:main
     container_name: benchmark-rust-server
     volumes:
       - rust_socket:/tmp
@@ -32,7 +30,7 @@ services:
 
   # Go Implementation
   go-app:
-    image: mfaziz/suricata:latest
+    image: mfaziz/sensor-suricata-service:latest
     container_name: benchmark-go-app
     volumes:
       - go_socket:/tmp
@@ -46,9 +44,7 @@ services:
           memory: 1G
 
   go-benchmarker:
-    build:
-      context: ..
-      dockerfile: sensor-benchmark-tool/Dockerfile
+    image: ghcr.io/maslazu/sensor-client-benchmark:main
     container_name: benchmark-go-server
     volumes:
       - go_socket:/tmp
