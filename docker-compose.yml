@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # Rust Implementation
+  rust-app:
+    image: ghcr.io/maslazu/sensor-suricata-client-rust:latest
+    container_name: benchmark-rust-app
+    volumes:
+      - rust_socket:/tmp
+    command: [ "./sensor-suricata-service-rust", "--file", "/tmp/bench-rust.sock", "--server", "rust-benchmarker", "--port", "50051", "--insecure", "true", "--sensor-id", "docker-bench-rust" ]
+    depends_on:
+      - rust-benchmarker
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  rust-benchmarker:
+    build:
+      context: ..
+      dockerfile: sensor-benchmark-tool/Dockerfile
+    container_name: benchmark-rust-server
+    volumes:
+      - rust_socket:/tmp
+    command: [ "./sensor-benchmark-tool", "--socket", "/tmp/bench-rust.sock", "--port", "50051", "--rate", "0" ]
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  # Go Implementation
+  go-app:
+    image: mfaziz/suricata:latest
+    container_name: benchmark-go-app
+    volumes:
+      - go_socket:/tmp
+    command: [ "client", "--file", "/tmp/bench-go.sock", "--server", "go-benchmarker", "--port", "50052", "--insecure", "--sensor-id", "docker-bench-go" ]
+    depends_on:
+      - go-benchmarker
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  go-benchmarker:
+    build:
+      context: ..
+      dockerfile: sensor-benchmark-tool/Dockerfile
+    container_name: benchmark-go-server
+    volumes:
+      - go_socket:/tmp
+    command: [ "./sensor-benchmark-tool", "--socket", "/tmp/bench-go.sock", "--port", "50052", "--rate", "0" ]
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+volumes:
+  rust_socket:
+  go_socket:
